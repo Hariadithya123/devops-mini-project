@@ -47,3 +47,4 @@ A small Flask + SQLite web app where students can upload PDF notes, search by ti
 ## Notes
 This is a learning/demo starter, not a production-ready public file-sharing service. Before exposing it publicly, add authentication and authorization, validate actual PDF file contents, add malware scanning and rate limits, use a production WSGI server, configure secrets securely, and review copyright/privacy requirements.
 Jenkins CI pipeline verified
+Testing automatic Jenkins build.
