@@ -1,0 +1,38 @@
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('NoteNest') {
+                    bat '"C:\\Users\\haria\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" -m venv .venv'
+                    bat '.venv\\Scripts\\python.exe -m pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                dir('NoteNest') {
+                    bat '.venv\\Scripts\\python.exe -m unittest discover -s tests -v'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'NoteNest CI: All tests passed!'
+        }
+        failure {
+            echo 'NoteNest CI: Build failed. Check Console Output.'
+        }
+    }
+}
