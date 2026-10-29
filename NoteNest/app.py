@@ -1,4 +1,5 @@
 import os
+from contextlib import contextmanager
 import sqlite3
 from datetime import datetime
 from uuid import uuid4
@@ -19,10 +20,21 @@ app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
+
+@contextmanager
 def get_db():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
-    return conn
+
+    try:
+        yield conn
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+
 
 
 def init_db():
