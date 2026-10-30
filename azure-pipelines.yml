@@ -1,0 +1,31 @@
+
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.11'
+    displayName: 'Set up Python'
+
+  - script: |
+      python --version
+      python -m pip install --upgrade pip
+      pip install -r NoteNest/requirements.txt
+      pip install pytest
+    displayName: 'Install dependencies'
+
+  - script: |
+      pytest NoteNest/tests --junitxml=test-results.xml
+    displayName: 'Run NoteNest tests'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: 'test-results.xml'
+      failTaskOnFailedTests: true
+    condition: succeededOrFailed()
+    displayName: 'Publish test results'
