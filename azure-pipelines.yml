@@ -14,18 +14,20 @@ steps:
   - script: |
       python --version
       python -m pip install --upgrade pip
-      pip install -r NoteNest/requirements.txt
+      pip install -r requirements.txt
       pip install pytest
+    workingDirectory: '$(Build.SourcesDirectory)/NoteNest'
     displayName: 'Install dependencies'
 
   - script: |
-      pytest NoteNest/tests --junitxml=test-results.xml
+      python -m pytest tests --junitxml=$(Common.TestResultsDirectory)/test-results.xml
+    workingDirectory: '$(Build.SourcesDirectory)/NoteNest'
     displayName: 'Run NoteNest tests'
 
   - task: PublishTestResults@2
     inputs:
       testResultsFormat: 'JUnit'
-      testResultsFiles: 'test-results.xml'
+      testResultsFiles: '$(Common.TestResultsDirectory)/test-results.xml'
       failTaskOnFailedTests: true
     condition: succeededOrFailed()
     displayName: 'Publish test results'
